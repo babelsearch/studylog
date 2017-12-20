@@ -1,0 +1,81 @@
+curl -XPUT "http://localhost:9200/kor/?pretty" -d '
+{
+  "settings" : {
+    "index":{
+      "analysis":{
+        "analyzer":{
+          "korean":{
+            "type":"custom",
+            "tokenizer":"seunjeon_default_tokenizer"
+          }
+        },
+        "tokenizer": {
+          "seunjeon_default_tokenizer": {
+            "type": "mecab_ko_standard_tokenizer",
+            "mecab_args": "/usr/local/lib/mecab/dic/mecab-ko-dic"
+          }
+        }
+      }
+    }
+  }, 
+  "mappings" : { 
+    "text" : { 
+      "properties" : { 
+        "idx" : { "type" : "integer" }, 
+        "title" : { "type" : "string", "analyzer" : "korean"},
+        "content" : { "type" : "string", "analyzer" : "korean"} 
+      } 
+    } 
+  } 
+}'
+
+GET kor/_search
+
+PUT kor/text/1
+{"idx" : 1,"title" : "그대 눈동자에 건배 "}
+
+PUT kor/text/2
+{"idx" : 2,"title" : "82년생 김지영"}
+
+PUT kor/text/3
+{"idx" : 3,"title" : "신경 끄기의 기술 "}
+
+PUT kor/text/4
+{"idx" : 4,"title" : "언어의 온도 "}
+
+PUT kor/text/5
+{"idx" : 5,"title" : "좀비고등학교 코믹스 4"}
+
+PUT kor/text/6
+{"idx" : 6,"title" : "아르테미스"}
+
+PUT kor/text/7
+{"idx" : 7,"title" : "너의 아름다움이 온통 글이 될까봐"}
+
+PUT kor/text/8
+{"idx" : 8,"title" : "설민석의 한국사 대모험 5 "}
+
+PUT kor/text/9
+{"idx" : 9,"title" : "말 그릇 "}
+
+PUT kor/text/10
+{"idx" : 10,"title" : "파리의 아파트 "}
+
+
+
+
+GET kor/_search
+{
+  "query" : {
+    "term": {
+      "title": {
+        "value": "파리"
+      }
+    }
+  },
+  "size": 1
+}
+
+
+GET kor/text/1/_termvectors?fields=title
+
